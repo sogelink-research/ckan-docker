@@ -1,50 +1,123 @@
 scheming_version: 2
 dataset_type: dataset
 about: A dataset schema with geographic fields
+about_url: https://github.com/ckan/ckanext-scheming
 
 dataset_fields:
+
+# Basic dataset fields
 - field_name: title
   label: Title
   preset: title
+  form_placeholder: e.g. A descriptive title
   required: true
 
 - field_name: name
   label: URL
   preset: dataset_slug
+  form_placeholder: e.g. my-dataset
 
 - field_name: notes
   label: Description
+  form_snippet: markdown.html
+  form_placeholder: Some useful notes about the data
   required: true
 
+- field_name: tag_string
+  label: Tags
+  preset: tag_string_autocomplete
+  form_placeholder: e.g. environment, geospatial, climate
+
+- field_name: license_id
+  label: License
+  form_snippet: license.html
+  help_text: License definitions and additional information can be found at http://opendefinition.org/
+
+- field_name: owner_org
+  label: Organization
+  preset: dataset_organization
+
+# Geographic/Spatial fields
 - field_name: spatial_coverage
   label: Geographic Coverage
-  help_text: "Describe the geographic area (e.g., Netherlands, Utrecht, Europe)"
-  
+  form_placeholder: e.g. Netherlands, Utrecht, Europe
+  help_text: Describe the geographic area covered by this dataset
+
 - field_name: bbox_north
   label: Bounding Box - North
-  help_text: Northern latitude
+  form_placeholder: e.g. 53.5
+  help_text: Northern latitude (decimal degrees)
   validators: ignore_missing numeric
 
-- field_name: bbox_south  
+- field_name: bbox_south
   label: Bounding Box - South
-  help_text: Southern latitude
+  form_placeholder: e.g. 50.7
+  help_text: Southern latitude (decimal degrees)
   validators: ignore_missing numeric
 
 - field_name: bbox_east
-  label: Bounding Box - East  
-  help_text: Eastern longitude
+  label: Bounding Box - East
+  form_placeholder: e.g. 7.2
+  help_text: Eastern longitude (decimal degrees)
   validators: ignore_missing numeric
 
 - field_name: bbox_west
   label: Bounding Box - West
-  help_text: Western longitude  
+  form_placeholder: e.g. 3.4
+  help_text: Western longitude (decimal degrees)
   validators: ignore_missing numeric
 
 - field_name: coordinate_system
   label: Coordinate Reference System
-  placeholder: "EPSG:4326"
-  help_text: "The coordinate system (e.g., EPSG:4326 for WGS84)"
+  form_placeholder: EPSG:4326
+  help_text: The coordinate system (e.g., EPSG:4326 for WGS84)
 
 - field_name: spatial_resolution
   label: Spatial Resolution
-  help_text: "Resolution in meters or degrees"
+  form_placeholder: e.g. 10 meters
+  help_text: Resolution in meters or degrees
+
+# Additional metadata fields
+- field_name: author
+  label: Author
+  form_placeholder: Joe Bloggs
+  display_property: dc:creator
+
+- field_name: author_email
+  label: Author Email
+  form_placeholder: joe@example.com
+  display_property: dc:creator
+  display_snippet: email.html
+  display_email_name_field: author
+
+- field_name: maintainer
+  label: Maintainer
+  form_placeholder: Joe Bloggs
+  display_property: dc:contributor
+
+- field_name: maintainer_email
+  label: Maintainer Email
+  form_placeholder: joe@example.com
+  display_property: dc:contributor
+  display_snippet: email.html
+  display_email_name_field: maintainer
+
+# Resource fields
+resource_fields:
+
+- field_name: url
+  label: URL
+  preset: resource_url_upload
+
+- field_name: name
+  label: Name
+  form_placeholder: e.g. January 2011 Gold Prices
+
+- field_name: description
+  label: Description
+  form_snippet: markdown.html
+  form_placeholder: Some useful notes about the data
+
+- field_name: format
+  label: Format
+  preset: resource_format_autocomplete
