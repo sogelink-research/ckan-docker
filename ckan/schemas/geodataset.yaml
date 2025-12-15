@@ -1,0 +1,50 @@
+scheming_version: 2
+dataset_type: dataset
+about: A dataset schema with geographic fields
+
+dataset_fields:
+- field_name: title
+  label: Title
+  preset: title
+  required: true
+
+- field_name: name
+  label: URL
+  preset: dataset_slug
+
+- field_name: notes
+  label: Description
+  required: true
+
+- field_name: spatial_coverage
+  label: Geographic Coverage
+  help_text: "Describe the geographic area (e.g., Netherlands, Utrecht, Europe)"
+  
+- field_name: bbox_north
+  label: Bounding Box - North
+  help_text: Northern latitude
+  validators: ignore_missing numeric
+
+- field_name: bbox_south  
+  label: Bounding Box - South
+  help_text: Southern latitude
+  validators: ignore_missing numeric
+
+- field_name: bbox_east
+  label: Bounding Box - East  
+  help_text: Eastern longitude
+  validators: ignore_missing numeric
+
+- field_name: bbox_west
+  label: Bounding Box - West
+  help_text: Western longitude  
+  validators: ignore_missing numeric
+
+- field_name: coordinate_system
+  label: Coordinate Reference System
+  placeholder: "EPSG:4326"
+  help_text: "The coordinate system (e.g., EPSG:4326 for WGS84)"
+
+- field_name: spatial_resolution
+  label: Spatial Resolution
+  help_text: "Resolution in meters or degrees"
