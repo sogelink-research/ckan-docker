@@ -8,6 +8,8 @@ FROM ckan/ckan-base:2.11
 # Copy custom initialization scripts
 COPY --chown=ckan-sys:ckan-sys docker-entrypoint.d/* /docker-entrypoint.d/
 COPY ./schemas /srv/app/schemas
+COPY --chown=ckan-sys:ckan-sys setup/map-catalogue.png /srv/app/src/ckan/ckan/public/base/images/map-catalogue.png
+COPY --chown=ckan-sys:ckan-sys setup/promoted.html.override /srv/app/src/ckan/ckan/templates/home/snippets/promoted.html
 
 USER root
 # Install dependencies for spatial extensions
