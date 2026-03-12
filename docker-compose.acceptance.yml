@@ -2,8 +2,10 @@ services:
   nginx:
     # Expose nginx only to NPM through the shared external Docker network.
     networks: !override
-      - ckannet
-      - berthaweb
+      ckannet: {}
+      berthaweb:
+        aliases:
+          - ckan-acceptance-nginx
     # Disable host port publishing in acceptance; NPM reaches nginx via berthaweb.
     ports: !reset []
 

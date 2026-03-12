@@ -328,10 +328,10 @@ For the acceptance server, use the Compose override file `docker-compose.accepta
 This mode connects `nginx` to the external Docker network `berthaweb` (shared with NGINX Proxy Manager)
 and removes host port publishing from this stack.
 
-To make this the default for `docker compose` commands with direnv, this repository includes `.envrc.acceptence`:
+To make this the default for `docker compose` commands with direnv, this repository includes `.envrc.acceptance`:
 
 ```bash
-cp .envrc.acceptence .envrc
+cp .envrc.acceptance .envrc
 direnv allow
 ```
 
