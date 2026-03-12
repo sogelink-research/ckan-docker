@@ -19,6 +19,7 @@
   - [6. Debugging with pdb](#6-debugging-with-pdb)
   - [7. Datastore and datapusher](#7-datastore-and-datapusher)
   - [8. NGINX](#8-nginx)
+    - [Acceptance with NPM (bertha)](#acceptance-with-npm-bertha)
   - [9. ckanext-envvars](#9-ckanext-envvars)
   - [10. CKAN\_SITE\_URL](#10-ckan_site_url)
   - [11. Manage new users](#11-manage-new-users)
@@ -320,6 +321,32 @@ The base Docker Compose configuration uses an NGINX image as the front-end (ie: 
 Creating the SSL cert and key files as follows:
 `openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=DE/ST=Berlin/L=Berlin/O=None/CN=localhost" -keyout ckan-local.key -out ckan-local.crt`
 The `ckan-local.*` files will then need to be moved into the nginx/setup/ directory
+
+### Acceptance with NPM (bertha)
+
+For the acceptance server, use the Compose override file `docker-compose.acceptance.yml`.
+This mode connects `nginx` to the external Docker network `berthaweb` (shared with NGINX Proxy Manager)
+and removes host port publishing from this stack.
+
+To make this the default for `docker compose` commands with direnv, this repository includes `.envrc.acceptence`:
+
+```bash
+cp .envrc.acceptence .envrc
+direnv allow
+```
+
+After that, normal Compose commands automatically use both files:
+
+```bash
+docker compose up -d --build
+docker compose config
+```
+
+The external network must exist on bertha:
+
+```bash
+docker network create berthaweb
+```
 
 ## 9. ckanext-envvars
 
