@@ -8,6 +8,7 @@ _solr/schema.xml
 _src/*
 local/*
 .env
+.envrc
 data/*
 
 # Python bytecode
