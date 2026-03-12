@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CKAN Search and DCAT Reference</title>
+  <style>
+    :root {
+      --bg: #f5f5f5;
+      --card: #ffffff;
+      --ink: #333333;
+      --muted: #6b6b6b;
+      --accent: #0b5d7a;
+      --line: #dddddd;
+      --mono-bg: #f7f7f7;
+      --hero: #2f2f2f;
+      --header-bg: #005d7a;
+      --footer-bg: #003647;
+      --header-height: 56px;
+      --footer-height: 72px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.45;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      height: var(--header-height);
+      background: var(--header-bg);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+    }
+
+    .topbar-inner,
+    .footer-inner {
+      width: 100%;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .topbar-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 56px;
+      width: 100%;
+      flex: 1;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 2rem;
+      color: var(--hero);
+    }
+
+    p.lead {
+      margin: 0 0 22px;
+      color: var(--muted);
+      max-width: 70ch;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 18px;
+      margin: 16px 0;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+
+    h2 {
+      margin: 0 0 8px;
+      font-size: 1.2rem;
+      color: var(--hero);
+    }
+
+    ul {
+      margin: 10px 0 0;
+      padding-left: 18px;
+    }
+
+    li { margin: 8px 0; }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: #084b63;
+      text-decoration: underline;
+    }
+
+    code {
+      background: var(--mono-bg);
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      padding: 0.08rem 0.35rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 0.92em;
+    }
+
+    .note {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .tiny { font-size: 0.9rem; color: var(--muted); }
+
+    .footerbar {
+      height: var(--footer-height);
+      background: var(--footer-bg);
+      display: flex;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .footer-note {
+      margin: 0;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <p class="topbar-title">CKAN</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h1>CKAN Search and DCAT Reference</h1>
+    <p class="lead">
+      Quick links for searching this CKAN catalog and checking DCAT export endpoints.
+      Use these as examples for users and integrators.
+    </p>
+
+    <section class="card">
+      <h2>CKAN UI Search</h2>
+      <ul>
+        <li><a href="/dataset?q=tram">/dataset?q=tram</a> <span class="tiny">(general dataset search)</span></li>
+        <li><a href="/dataset?q=tram+metro">/dataset?q=tram+metro</a> <span class="tiny">(multi-keyword example)</span></li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>CKAN API Search (package_search)</h2>
+      <ul>
+        <li><a href="/api/3/action/package_search?q=title%3Atram&amp;rows=20">/api/3/action/package_search?q=title:tram&amp;rows=20</a></li>
+        <li><a href="/api/3/action/package_search?q=notes%3Atram&amp;rows=20">/api/3/action/package_search?q=notes:tram&amp;rows=20</a></li>
+        <li><a href="/api/3/action/package_search?q=title%3Atram%20OR%20notes%3Atram&amp;rows=20">/api/3/action/package_search?q=title:tram OR notes:tram&amp;rows=20</a></li>
+        <li><a href="/api/3/action/package_search?q=tram&amp;rows=20&amp;start=0">/api/3/action/package_search?q=tram&amp;rows=20&amp;start=0</a></li>
+      </ul>
+      <p class="note">Use <code>start</code> and <code>rows</code> for paging through large catalogs.</p>
+    </section>
+
+    <section class="card">
+      <h2>DCAT / DCAT-AP Endpoints</h2>
+      <ul>
+        <li><a href="/catalog.rdf">/catalog.rdf</a></li>
+        <li><a href="/catalog.ttl">/catalog.ttl</a></li>
+        <li><a href="/catalog.jsonld">/catalog.jsonld</a></li>
+        <li><a href="/dataset/amsterdam-open-geodata-522-tram-en-metrolijnen-2019.jsonld">/dataset/amsterdam-open-geodata-522-tram-en-metrolijnen-2019.jsonld</a></li>
+      </ul>
+      <p class="note">DCAT-AP standardizes metadata format, not catalog search API syntax.</p>
+    </section>
+
+    <section class="card">
+      <h2>Notes</h2>
+      <ul>
+        <li>Use CKAN search endpoints for discovery.</li>
+        <li>Use DCAT endpoints for interoperable metadata exchange and harvesting.</li>
+        <li>For very large catalogs, avoid scanning full <code>/catalog.jsonld</code> for keyword search.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="footerbar">
+    <div class="footer-inner">
+      <p class="footer-note">Open Knowledge Foundation</p>
+    </div>
+  </footer>
+</body>
+</html>

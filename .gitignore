@@ -8,3 +8,10 @@ _solr/schema.xml
 _src/*
 local/*
 .env
+data/*
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd

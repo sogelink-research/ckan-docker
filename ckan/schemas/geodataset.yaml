@@ -45,37 +45,62 @@ dataset_fields:
 
 - field_name: bbox_north
   label: Bounding Box - North
-  form_placeholder: e.g. 53.5
-  help_text: Northern latitude (decimal degrees)
-  validators: ignore_missing numeric
+  form_placeholder: e.g. 52.431
+  help_text: Northern latitude in decimal degrees
+  validators: ignore_missing
 
 - field_name: bbox_south
   label: Bounding Box - South
-  form_placeholder: e.g. 50.7
-  help_text: Southern latitude (decimal degrees)
-  validators: ignore_missing numeric
+  form_placeholder: e.g. 52.278
+  help_text: Southern latitude in decimal degrees
+  validators: ignore_missing
 
 - field_name: bbox_east
   label: Bounding Box - East
-  form_placeholder: e.g. 7.2
-  help_text: Eastern longitude (decimal degrees)
-  validators: ignore_missing numeric
+  form_placeholder: e.g. 5.079
+  help_text: Eastern longitude in decimal degrees
+  validators: ignore_missing
 
 - field_name: bbox_west
   label: Bounding Box - West
-  form_placeholder: e.g. 3.4
-  help_text: Western longitude (decimal degrees)
-  validators: ignore_missing numeric
+  form_placeholder: e.g. 4.728
+  help_text: Western longitude in decimal degrees
+  validators: ignore_missing
+
+- field_name: spatial_bbox
+  label: Bounding Box (WKT)
+  form_placeholder: e.g. POLYGON((4.728 52.278, 5.079 52.278, 5.079 52.431, 4.728 52.431, 4.728 52.278))
+  help_text: Optional advanced field in WKT. Used by ckanext-dcat for dcat:bbox export
+  validators: ignore_missing
+
+- field_name: spatial_centroid
+  label: Centroid (WKT)
+  form_placeholder: e.g. POINT(4.895 52.370)
+  help_text: Representative center point in WKT. This is exported by ckanext-dcat as dcat:centroid
+  validators: ignore_missing
 
 - field_name: coordinate_system
   label: Coordinate Reference System
   form_placeholder: EPSG:4326
   help_text: The coordinate system (e.g., EPSG:4326 for WGS84)
 
-- field_name: spatial_resolution
-  label: Spatial Resolution
-  form_placeholder: e.g. 10 meters
-  help_text: Resolution in meters or degrees
+- field_name: spatial_resolution_in_meters
+  label: Spatial Resolution (meters)
+  form_placeholder: e.g. 10
+  help_text: Spatial resolution in meters. Exported as dcat:spatialResolutionInMeters
+  validators: ignore_missing
+
+- field_name: temporal_start
+  label: Temporal Coverage Start
+  form_placeholder: e.g. 2025-01-01
+  help_text: Start date for the period covered by this dataset
+  validators: ignore_missing
+
+- field_name: temporal_end
+  label: Temporal Coverage End
+  form_placeholder: e.g. 2025-12-31
+  help_text: End date for the period covered by this dataset
+  validators: ignore_missing
 
 # Additional metadata fields
 - field_name: author
@@ -87,8 +112,6 @@ dataset_fields:
   label: Author Email
   form_placeholder: joe@example.com
   display_property: dc:creator
-  display_snippet: email.html
-  display_email_name_field: author
 
 - field_name: maintainer
   label: Maintainer
@@ -99,8 +122,6 @@ dataset_fields:
   label: Maintainer Email
   form_placeholder: joe@example.com
   display_property: dc:contributor
-  display_snippet: email.html
-  display_email_name_field: maintainer
 
 # Resource fields
 resource_fields:
@@ -121,3 +142,8 @@ resource_fields:
 - field_name: format
   label: Format
   preset: resource_format_autocomplete
+
+- field_name: wms_layer
+  label: WMS Layer Name
+  form_placeholder: e.g. TRAMMETRO_LIJNEN_2025
+  help_text: Exact layer Name from the WMS GetCapabilities document

@@ -42,6 +42,7 @@ services:
         condition: service_healthy
     volumes:
       - ckan_storage:/var/lib/ckan
+      - ./ckan/schemas:/srv/app/schemas:ro
       - pip_cache:/root/.cache/pip
       - site_packages:/usr/lib/python3.10/site-packages
     restart: unless-stopped

@@ -25,6 +25,7 @@ RUN pip install --no-cache-dir pika redis requests #for harvest extension
 RUN pip install --no-cache-dir git+https://github.com/ckan/ckanext-harvest.git
 RUN pip install --no-cache-dir git+https://github.com/ckan/ckanext-scheming.git#egg=ckanext-scheming
 RUN pip install --no-cache-dir git+https://github.com/ckan/ckanext-spatial.git
+RUN pip install --no-cache-dir git+https://github.com/ckan/ckanext-geoview.git
 RUN pip install --no-cache-dir ckanext-dcat
 
 
