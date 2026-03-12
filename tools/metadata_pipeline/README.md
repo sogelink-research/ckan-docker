@@ -100,6 +100,9 @@ python3 tools/metadata_pipeline/import_ckan_upsert.py \
   --owner-org alfa
 ```
 
+`--owner-org` expects the CKAN organization `name` (slug), not the display title.
+If the title contains spaces, use dashes in the slug (for example: `sogelink research` -> `sogelink-research`).
+
 For fast test runs (avoid waiting on all datasets):
 
 ```bash
@@ -121,6 +124,7 @@ python3 tools/metadata_pipeline/import_ckan_upsert.py \
   --in data/metadata/amsterdam_open_geodata.enriched.jsonl \
   --ckan-url https://localhost:8443 \
   --api-key "<CKAN_API_KEY>" \
+  --owner-org sogelink-research \
   --insecure \
   --dry-run
 ```

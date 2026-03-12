@@ -362,13 +362,15 @@ def main(argv: List[str]) -> int:
                 dataset_payload.pop("resources", None)
                 dataset_payload["id"] = package_name
                 ckan_action(args.ckan_url, args.api_key, action, dataset_payload, insecure=args.insecure)
-                sync_package_resources(
-                    args.ckan_url,
-                    args.api_key,
-                    package_name,
-                    resources_payload,
-                    insecure=args.insecure,
-                )
+
+            # Keep resources and resource views in sync for both create and patch paths.
+            sync_package_resources(
+                args.ckan_url,
+                args.api_key,
+                package_name,
+                resources_payload,
+                insecure=args.insecure,
+            )
             if action == "package_create":
                 created += 1
             else:
