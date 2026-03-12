@@ -1,3 +1,6 @@
 # Use base + acceptance compose files by default (direnv).
 # Equivalent to: docker compose -f docker-compose.yml -f docker-compose.acceptance.yml ...
 export COMPOSE_FILE=docker-compose.yml:docker-compose.acceptance.yml
+
+# Acceptance public URL, overrides value from .env via acceptance compose override.
+export ACCEPTANCE_CKAN_SITE_URL=https://example.com

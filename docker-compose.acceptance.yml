@@ -1,4 +1,9 @@
 services:
+  ckan:
+    # Allow per-environment site URL override from shell/direnv.
+    environment:
+      CKAN_SITE_URL: ${ACCEPTANCE_CKAN_SITE_URL:-https://example.com}
+
   nginx:
     # Expose nginx only to NPM through the shared external Docker network.
     networks: !override

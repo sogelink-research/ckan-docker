@@ -335,6 +335,9 @@ cp .envrc.acceptance .envrc
 direnv allow
 ```
 
+`ACCEPTANCE_CKAN_SITE_URL` in `.envrc.acceptance` defaults to `https://example.com`.
+Replace it with your real public hostname before running the stack.
+
 After that, normal Compose commands automatically use both files:
 
 ```bash
