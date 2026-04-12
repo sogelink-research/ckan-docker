@@ -18,6 +18,10 @@ from urllib.parse import urljoin
 from urllib.request import Request, urlopen
 
 
+OPEN_ACCESS_RIGHTS_URI = "http://publications.europa.eu/resource/authority/access-right/PUBLIC"
+OGC_EPSG_PREFIX = "http://www.opengis.net/def/crs/EPSG/0/"
+
+
 def slugify(value: str) -> str:
     value = value.lower().strip()
     value = re.sub(r"[^a-z0-9]+", "-", value)
@@ -98,6 +102,51 @@ def clean_tags(tags: Iterable[str]) -> List[Dict[str, str]]:
         seen.add(value)
         out.append({"name": value})
     return out
+
+
+def text_value(value: Any) -> str:
+    return str(value or "").strip()
+
+
+def first_email(*values: Any) -> str:
+    for value in values:
+        text = text_value(value)
+        if text and "@" in text:
+            return text
+    return ""
+
+
+def first_nonempty(*values: Any) -> str:
+    for value in values:
+        text = text_value(value)
+        if text:
+            return text
+    return ""
+
+
+def ogc_reference_system(value: Any) -> str:
+    text = text_value(value)
+    match = re.fullmatch(r"EPSG:(\d+)", text, flags=re.I)
+    if match:
+        return f"{OGC_EPSG_PREFIX}{match.group(1)}"
+    return text
+
+
+def infer_resource_type(dataset: Dict[str, Any], resources: List[Dict[str, Any]]) -> str:
+    raw_type = text_value(dataset.get("raw_data_type")).lower()
+    if raw_type in {"geojson", "json", "zip", "xlsx", "xls", "csv", "gpkg", "gml", "kml"}:
+        return raw_type.upper()
+
+    formats = {
+        text_value(resource.get("format")).upper()
+        for resource in resources
+        if isinstance(resource, dict) and text_value(resource.get("format"))
+    }
+    if len(formats) == 1:
+        return next(iter(formats))
+    if formats:
+        return "dataset"
+    return ""
 
 
 def resource_identity(resource: Dict[str, Any]) -> Tuple[str, str, str]:
@@ -253,59 +302,106 @@ def sync_package_resources(
 def map_record_to_ckan(record: Dict[str, Any], fallback_org: Optional[str], license_id: str) -> Dict[str, Any]:
     dataset = record.get("dataset", {}) if isinstance(record.get("dataset"), dict) else {}
     resources = record.get("resources", []) if isinstance(record.get("resources"), list) else []
+    source = record.get("source", {}) if isinstance(record.get("source"), dict) else {}
+    extras = record.get("extras", {}) if isinstance(record.get("extras"), dict) else {}
 
-    external_id = str(dataset.get("external_id") or dataset.get("title") or "dataset")
+    external_id = text_value(dataset.get("external_id") or dataset.get("title") or "dataset")
     package_name = slugify(external_id)
 
-    title = str(dataset.get("title") or package_name)
-    notes = str(dataset.get("description") or "").strip()
+    title = text_value(dataset.get("title") or package_name)
+    notes = text_value(dataset.get("description"))
     if not notes:
         # Scheming marks notes as required; provide a stable fallback for sparse sources.
         notes = f"Metadata imported from source: {title}."
+
+    query_url = text_value(source.get("query_url"))
+    source_url = text_value(source.get("source_url"))
+    source_org = text_value(dataset.get("source_organization"))
+    contact_name = first_nonempty(dataset.get("maintainer"), dataset.get("author"), source_org)
+    contact_email = first_email(dataset.get("maintainer_email"), dataset.get("author_email"))
+    creator_name = first_nonempty(source_org, dataset.get("author"), dataset.get("maintainer"))
+    provider_text = first_nonempty(extras.get("provider_link_text"), source_org)
+    resource_type = infer_resource_type(dataset, resources)
+    coverage_period = text_value(dataset.get("coverage_period"))
+    feature_count = extras.get("feature_count")
+    reference_system = ogc_reference_system(dataset.get("coordinate_system") or "EPSG:4326")
+
+    provenance_parts = ["Imported from Amsterdam Open Geodata metadata pipeline"]
+    if source_url:
+        provenance_parts.append(f"source={source_url}")
+    if query_url:
+        provenance_parts.append(f"record={query_url}")
+    if feature_count not in (None, ""):
+        provenance_parts.append(f"feature_count={feature_count}")
+    provenance = "; ".join(provenance_parts)
 
     mapped_resources: List[Dict[str, Any]] = []
     for res in resources:
         if not isinstance(res, dict):
             continue
-        url = str(res.get("url") or "").strip()
+        url = text_value(res.get("url"))
         if not url:
             continue
         mapped_resources.append(
             {
-                "name": str(res.get("name") or "Resource").strip(),
+                "name": text_value(res.get("name") or "Resource"),
                 "url": url,
-                "description": str(res.get("description") or "").strip(),
-                "format": str(res.get("format") or "").strip(),
-                "wms_layer": str(res.get("wms_layer") or "").strip(),
+                "description": text_value(res.get("description")),
+                "format": text_value(res.get("format")),
+                "wms_layer": text_value(res.get("wms_layer")),
             }
         )
 
-    owner_org = str(dataset.get("owner_org") or fallback_org or "").strip() or None
+    owner_org = text_value(dataset.get("owner_org") or fallback_org) or None
 
     payload: Dict[str, Any] = {
         "name": package_name,
         "title": title,
         "notes": notes,
         "tag_string": ",".join(clean_tag["name"] for clean_tag in clean_tags(dataset.get("tags", []))),
-        "license_id": str(dataset.get("license_id") or license_id),
+        "license_id": text_value(dataset.get("license_id") or license_id),
         "owner_org": owner_org,
-        "author": str(dataset.get("author") or "").strip(),
-        "author_email": str(dataset.get("author_email") or "").strip(),
-        "maintainer": str(dataset.get("maintainer") or "").strip(),
-        "maintainer_email": str(dataset.get("maintainer_email") or "").strip(),
-        "spatial_coverage": str(dataset.get("spatial_coverage") or dataset.get("category") or "").strip(),
+        "author": text_value(dataset.get("author")),
+        "author_email": text_value(dataset.get("author_email")),
+        "maintainer": text_value(dataset.get("maintainer")),
+        "maintainer_email": text_value(dataset.get("maintainer_email")),
+        "spatial_coverage": text_value(dataset.get("spatial_coverage") or dataset.get("category")),
         "bbox_north": dataset.get("bbox_north"),
         "bbox_south": dataset.get("bbox_south"),
         "bbox_east": dataset.get("bbox_east"),
         "bbox_west": dataset.get("bbox_west"),
-        "spatial_bbox": str(dataset.get("spatial_bbox") or "").strip(),
-        "spatial_centroid": str(dataset.get("spatial_centroid") or "").strip(),
-        "coordinate_system": str(dataset.get("coordinate_system") or "EPSG:4326").strip(),
-        "temporal_start": str(dataset.get("temporal_start") or "").strip(),
-        "temporal_end": str(dataset.get("temporal_end") or "").strip(),
-        "spatial_resolution_in_meters": str(dataset.get("spatial_resolution_in_meters") or "").strip(),
+        "spatial_bbox": text_value(dataset.get("spatial_bbox")),
+        "spatial_centroid": text_value(dataset.get("spatial_centroid")),
+        "coordinate_system": text_value(dataset.get("coordinate_system") or "EPSG:4326"),
+        "temporal_start": text_value(dataset.get("temporal_start")),
+        "temporal_end": text_value(dataset.get("temporal_end")),
+        "spatial_resolution_in_meters": text_value(dataset.get("spatial_resolution_in_meters")),
+        "theme": text_value(dataset.get("category")),
+        "contact_point_name": contact_name,
+        "contact_point_email": contact_email,
+        "landing_page": query_url,
+        "documentation": source_url,
+        "source": source_url,
+        "language": text_value(dataset.get("language") or "nl"),
+        "other_identifier": external_id,
+        "reference_system": reference_system,
+        "topic_category": text_value(dataset.get("category")),
+        "resource_type": resource_type,
+        "purpose": text_value(extras.get("source_link_text") or title),
+        "provenance": provenance,
+        "access_rights": text_value(dataset.get("access_rights") or OPEN_ACCESS_RIGHTS_URI),
+        "creator": creator_name,
+        "resource_provider": provider_text,
+        "originator": creator_name,
+        "custodian": provider_text,
+        "was_generated_by": "Amsterdam Open Geodata metadata pipeline import",
+        "qualified_relation": query_url,
+        "qualified_relation_role": "source record",
         "resources": mapped_resources,
     }
+
+    if coverage_period:
+        payload["version_notes"] = coverage_period
 
     # Remove keys CKAN may reject as null.
     return {k: v for k, v in payload.items() if v not in (None, "") or k in {"notes", "resources"}}

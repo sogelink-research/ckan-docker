@@ -214,6 +214,7 @@ The Docker image config files used to build your CKAN project are located in the
   * Any extension cloned on the `src` folder will be installed in the CKAN container when booting up Docker Compose (`docker compose up`). This includes installing any requirements listed in a `requirements.txt` (or `pip-requirements.txt`) file and running `python setup.py develop`.
   * CKAN is started running this: `/usr/bin/ckan -c /srv/app/ckan.ini run -H 0.0.0.0`.
   * Make sure to add the local plugins to the `CKAN__PLUGINS` env var in the `.env` file.
+  * This repository also includes a bundled local extension at `ckan/extensions/ckanext-geodcatap` that registers a custom `ckanext-dcat` RDF profile named `geodcat_ap`.
 
 * Any custom changes to the scripts run during container start up can be made to scripts in the `setup/` directory. For instance if you wanted to change the port on which CKAN runs you would need to make changes to the Docker Compose yaml file, and the `start_ckan.sh.override` file. Then you would need to add the following line to the Dockerfile ie: `COPY setup/start_ckan.sh.override ${APP_DIR}/start_ckan.sh`. The `start_ckan.sh` file in the locally built image would override the `start_ckan.sh` file included in the base image
 
@@ -365,6 +366,7 @@ For the extension to correctly identify which env var keys map to the format use
 For example:
 
   * `CKAN__PLUGINS="envvars image_view text_view recline_view datastore datapusher"`
+  * `CKANEXT__DCAT__RDF__PROFILES="euro_dcat_ap_2 euro_dcat_ap_scheming geodcat_ap"`
   * `CKAN__DATAPUSHER__CALLBACK_URL_BASE=http://ckan:5000`
   * `CKAN___BEAKER__SESSION__SECRET=CHANGE_ME`
 

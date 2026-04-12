@@ -8,6 +8,7 @@ FROM ckan/ckan-base:2.11
 # Copy custom initialization scripts
 COPY --chown=ckan-sys:ckan-sys docker-entrypoint.d/* /docker-entrypoint.d/
 COPY ./schemas /srv/app/schemas
+COPY ./extensions/ckanext-geodcatap /srv/app/extensions/ckanext-geodcatap
 COPY --chown=ckan-sys:ckan-sys setup/map-catalogue.png /srv/app/src/ckan/ckan/public/base/images/map-catalogue.png
 COPY --chown=ckan-sys:ckan-sys setup/promoted.html.override /srv/app/src/ckan/ckan/templates/home/snippets/promoted.html
 
@@ -29,6 +30,7 @@ RUN pip install --no-cache-dir git+https://github.com/ckan/ckanext-scheming.git#
 RUN pip install --no-cache-dir git+https://github.com/ckan/ckanext-spatial.git
 RUN pip install --no-cache-dir git+https://github.com/ckan/ckanext-geoview.git
 RUN pip install --no-cache-dir ckanext-dcat
+RUN pip install --no-cache-dir /srv/app/extensions/ckanext-geodcatap
 
 
 # Apply any patches needed to CKAN core or any of the built extensions (not the

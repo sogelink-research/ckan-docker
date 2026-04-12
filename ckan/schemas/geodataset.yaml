@@ -28,6 +28,11 @@ dataset_fields:
   preset: tag_string_autocomplete
   form_placeholder: e.g. environment, geospatial, climate
 
+- field_name: theme
+  label: Theme URI
+  form_placeholder: http://publications.europa.eu/resource/authority/data-theme/ENVI
+  help_text: DCAT / GeoDCAT theme URI
+
 - field_name: license_id
   label: License
   form_snippet: license.html
@@ -37,11 +42,106 @@ dataset_fields:
   label: Organization
   preset: dataset_organization
 
-# Geographic/Spatial fields
+# Discovery and access
+- field_name: contact_point_name
+  label: Contact Point Name
+  form_placeholder: e.g. Amsterdam Data Support
+  help_text: Functional contact name for questions about the dataset
+
+- field_name: contact_point_email
+  label: Contact Point Email
+  form_placeholder: e.g. opendata@example.org
+  help_text: Functional contact email address
+
+- field_name: contact_point_url
+  label: Contact Point URL
+  form_placeholder: e.g. https://example.org/contact
+  help_text: Contact form or helpdesk URL
+
+- field_name: creator
+  label: Creator
+  form_placeholder: e.g. Municipality of Amsterdam
+  help_text: Organization responsible for creating the dataset
+
+- field_name: creator_uri
+  label: Creator URI
+  form_placeholder: e.g. https://example.org/org/municipality-amsterdam
+  help_text: Preferred creator identifier URI
+
+- field_name: creator_type
+  label: Creator Type URI
+  form_placeholder: e.g. http://publications.europa.eu/resource/authority/corporate-body-classification/CGOV
+  help_text: Optional concept describing the creator type
+
+- field_name: landing_page
+  label: Landing Page
+  form_placeholder: e.g. https://example.org/dataset-info
+  help_text: Web page describing the dataset
+
+- field_name: documentation
+  label: Documentation
+  form_placeholder: e.g. https://example.org/docs
+  help_text: Documentation URI or label
+
+- field_name: conforms_to
+  label: Conforms To
+  form_placeholder: e.g. https://example.org/specification
+  help_text: Standard or specification URI or label
+
+- field_name: related_resource
+  label: Related Resource
+  form_placeholder: e.g. https://example.org/related
+  help_text: Related resource URI or label
+
+- field_name: is_referenced_by
+  label: Is Referenced By
+  form_placeholder: e.g. https://example.org/report
+  help_text: Related document URI or label
+
+- field_name: source
+  label: Source
+  form_placeholder: e.g. https://example.org/source
+  help_text: Source resource URI or label
+
+- field_name: sample
+  label: Sample
+  form_placeholder: e.g. https://example.org/sample
+  help_text: Sample resource URI or label
+
+- field_name: language
+  label: Language URI
+  form_placeholder: http://publications.europa.eu/resource/authority/language/ENG
+  help_text: Language URI
+
+- field_name: frequency
+  label: Update Frequency URI
+  form_placeholder: http://publications.europa.eu/resource/authority/frequency/MONTHLY
+  help_text: Update frequency URI
+
+- field_name: version
+  label: Version
+  form_placeholder: e.g. 1.2
+
+- field_name: version_notes
+  label: Version Notes
+  form_placeholder: e.g. Added missing municipal boundaries
+  form_snippet: markdown.html
+
+- field_name: other_identifier
+  label: Other Identifier
+  form_placeholder: e.g. urn:uuid:12345678-1234-1234-1234-123456789abc
+  help_text: Additional non-primary identifier
+
+# Spatial and temporal
 - field_name: spatial_coverage
   label: Geographic Coverage
   form_placeholder: e.g. Netherlands, Utrecht, Europe
   help_text: Describe the geographic area covered by this dataset
+
+- field_name: spatial_uri
+  label: Geographic Coverage URI
+  form_placeholder: e.g. https://sws.geonames.org/2759794/
+  help_text: URI identifying the covered place or area
 
 - field_name: bbox_north
   label: Bounding Box - North
@@ -84,10 +184,21 @@ dataset_fields:
   form_placeholder: EPSG:4326
   help_text: The coordinate system (e.g., EPSG:4326 for WGS84)
 
+- field_name: reference_system
+  label: Reference System URI
+  form_placeholder: http://www.opengis.net/def/crs/EPSG/0/4326
+  help_text: Preferred GeoDCAT-AP reference system identifier URI
+
 - field_name: spatial_resolution_in_meters
   label: Spatial Resolution (meters)
   form_placeholder: e.g. 10
   help_text: Spatial resolution in meters. Exported as dcat:spatialResolutionInMeters
+  validators: ignore_missing
+
+- field_name: spatial_resolution_as_text
+  label: Spatial Resolution (text)
+  form_placeholder: e.g. 1:10000
+  help_text: Non-metric spatial resolution description
   validators: ignore_missing
 
 - field_name: temporal_start
@@ -101,6 +212,124 @@ dataset_fields:
   form_placeholder: e.g. 2025-12-31
   help_text: End date for the period covered by this dataset
   validators: ignore_missing
+
+- field_name: temporal_resolution
+  label: Temporal Resolution
+  form_placeholder: e.g. P1D
+  help_text: ISO 8601 duration, exported as dcat:temporalResolution
+  validators: ignore_missing
+
+- field_name: topic_category
+  label: Topic Category URI
+  form_placeholder: http://inspire.ec.europa.eu/metadata-codelist/TopicCategory/environment
+  help_text: INSPIRE topic category URI for GeoDCAT-AP
+
+- field_name: resource_type
+  label: Resource Type URI
+  form_placeholder: http://inspire.ec.europa.eu/metadata-codelist/ResourceType/dataset
+  help_text: GeoDCAT-AP or INSPIRE resource type URI
+
+- field_name: hvd_category
+  label: HVD Category URI
+  form_placeholder: http://data.europa.eu/bna/c_164e0bf5
+  help_text: High Value Dataset category URI when applicable
+
+# Provenance and legal
+- field_name: purpose
+  label: Purpose
+  form_placeholder: e.g. Supports municipal planning and public reuse
+  form_snippet: markdown.html
+
+- field_name: provenance
+  label: Provenance
+  form_placeholder: e.g. Derived from annual municipal survey data
+  form_snippet: markdown.html
+
+- field_name: access_rights
+  label: Access Rights URI
+  form_placeholder: http://publications.europa.eu/resource/authority/access-right/PUBLIC
+  help_text: Access rights URI
+
+- field_name: rights
+  label: Rights Statement
+  form_placeholder: e.g. Reuse permitted with attribution
+  form_snippet: markdown.html
+
+- field_name: applicable_legislation
+  label: Applicable Legislation
+  form_placeholder: e.g. https://eur-lex.europa.eu/eli/reg/2023/138/oj
+  help_text: Applicable legislation URI or label
+
+- field_name: status
+  label: Dataset Status URI
+  form_placeholder: http://publications.europa.eu/resource/authority/dataset-status/COMPLETED
+  help_text: Dataset lifecycle status URI
+
+- field_name: has_version
+  label: Has Version
+  form_placeholder: e.g. https://example.org/dataset/roads/v2
+  help_text: Related dataset that is a version of this dataset
+
+- field_name: in_series
+  label: In Series
+  form_placeholder: e.g. https://example.org/dataset-series/annual-roads
+  help_text: Dataset series this dataset belongs to
+
+- field_name: was_generated_by
+  label: Was Generated By
+  form_placeholder: e.g. ETL process 2026-01
+  help_text: Activity that generated the dataset
+
+- field_name: qualified_relation
+  label: Qualified Relation
+  form_placeholder: e.g. https://example.org/related
+  help_text: Related resource used in a qualified relation
+
+- field_name: qualified_relation_role
+  label: Qualified Relation Role URI
+  form_placeholder: e.g. https://example.org/roles/derivation
+  help_text: Role URI for the qualified relation
+
+# Roles and responsible parties
+- field_name: originator
+  label: Originator
+  form_placeholder: e.g. Municipality of Amsterdam
+  help_text: Name or URI of the originator
+
+- field_name: principal_investigator
+  label: Principal Investigator
+  form_placeholder: e.g. Urban Research Team
+  help_text: Name or URI of the principal investigator
+
+- field_name: processor
+  label: Processor
+  form_placeholder: e.g. Spatial Data Processing Unit
+  help_text: Name or URI of the processor
+
+- field_name: custodian
+  label: Custodian
+  form_placeholder: e.g. Amsterdam Data Office
+  help_text: Name or URI of the custodian
+
+- field_name: resource_provider
+  label: Resource Provider
+  form_placeholder: e.g. Amsterdam Geo Department
+  help_text: Name or URI of the resource provider
+
+- field_name: user
+  label: User
+  form_placeholder: e.g. Public Works Department
+  help_text: Name or URI of an intended or actual user
+
+- field_name: qualified_attribution_agent
+  label: Qualified Attribution Agent
+  form_placeholder: e.g. Regional Survey Office
+  help_text: Additional responsible organization
+
+- field_name: qualified_attribution_role
+  label: Qualified Attribution Role URI
+  form_placeholder: e.g. https://standaarden.overheid.nl/owms/terms/contributor
+  help_text: Role URI for the qualified attribution
 
 # Additional metadata fields
 - field_name: author

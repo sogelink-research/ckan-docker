@@ -36,10 +36,13 @@ FROM ckan/ckan-dev:2.11
 
 # Copy custom initialization scripts
 COPY --chown=ckan-sys:ckan-sys docker-entrypoint.d/* /docker-entrypoint.d/
+COPY --chown=ckan-sys:ckan-sys extensions/ckanext-geodcatap /srv/app/extensions/ckanext-geodcatap
 
 # Apply any patches needed to CKAN core or any of the built extensions (not the
 # runtime mounted ones)
 COPY --chown=ckan-sys:ckan-sys patches ${APP_DIR}/patches
+
+RUN pip install --no-cache-dir /srv/app/extensions/ckanext-geodcatap
 
 USER ckan
 
